@@ -537,3 +537,69 @@ app.get("/report", async (req, res) => {
    res.status(500).json({ message: err.message });
  }
 });
+
+
+// import express from "express";
+// import cors from "cors";
+// import { MongoClient, ObjectId } from "mongodb";
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// const client = new MongoClient("mongodb://127.0.0.1:27017");
+
+// await client.connect();
+
+// const db = client.db("feedbackDB");
+// const feedback = db.collection("feedback");
+
+// console.log("MongoDB connected");
+
+// // GET: View all feedback
+// app.get("/feedback", async (req, res) => {
+//   const data = await feedback.find().toArray();
+//   res.json(data);
+// });
+
+// // POST: Submit feedback
+// app.post("/feedback", async (req, res) => {
+//   const { name, service, rating, comment } = req.body;
+
+//   if (!name || !service || !rating || !comment) {
+//     return res.status(400).json({
+//       message: "Please fill all fields"
+//     });
+//   }
+
+//   const result = await feedback.insertOne({
+//     name,
+//     service,
+//     rating: Number(rating),
+//     comment
+//   });
+
+//   res.json({
+//     message: "Feedback submitted successfully",
+//     _id: result.insertedId
+//   });
+// });
+
+// // DELETE: Delete feedback
+// app.delete("/feedback/:id", async (req, res) => {
+//   if (!ObjectId.isValid(req.params.id)) {
+//     return res.status(400).json({ message: "Invalid ID" });
+//   }
+
+//   const result = await feedback.deleteOne({
+//     _id: new ObjectId(req.params.id)
+//   });
+
+//   res.json({ message: "Feedback deleted successfully" });
+// });
+
+// app.listen(5002, () => {
+//   console.log("Server running on port 5002");
+// });
+

@@ -555,200 +555,387 @@
 
 // export default App;
 
+// import { useState, useEffect } from "react";
+
+
+// const API = "http://localhost:5000";
+
+
+// function App() {
+//  const [students, setStudents] = useState([]);
+//  const [form, setForm] = useState({
+//    name: "",
+//    rollNo: "",
+//    department: "",
+//    marks: ""
+//  });
+//  const [editId, setEditId] = useState(null);
+
+
+//  // Fetch students
+//  const getStudents = async () => {
+//    const res = await fetch(`${API}/students`);
+//    const data = await res.json();
+//    setStudents(data);
+//  };
+
+
+//  useEffect(() => {
+//    getStudents();
+//  }, []);
+
+
+//  // Handle input
+//  const handleChange = (e) => {
+//    setForm({ ...form, [e.target.name]: e.target.value });
+//  };
+
+
+//  // Add or update student
+//  const handleSubmit = async (e) => {
+//    e.preventDefault();
+
+
+//    await fetch(
+//      editId
+//        ? `${API}/students/${editId}`
+//        : `${API}/students`,
+//      {
+//        method: editId ? "PUT" : "POST",
+//        headers: { "Content-Type": "application/json" },
+//        body: JSON.stringify({
+//          ...form,
+//          marks: Number(form.marks)
+//        })
+//      }
+//    );
+
+
+//    setForm({
+//      name: "",
+//      rollNo: "",
+//      department: "",
+//      marks: ""
+//    });
+//    setEditId(null);
+//    getStudents();
+//  };
+
+
+//  // Edit student
+//  const editStudent = (s) => {
+//    setForm({
+//      name: s.name,
+//      rollNo: s.rollNo,
+//      department: s.department,
+//      marks: s.marks
+//    });
+//    setEditId(s._id);
+//  };
+
+
+//  // Delete student
+//  const deleteStudent = async (id) => {
+//    await fetch(`${API}/students/${id}`, {
+//      method: "DELETE"
+//    });
+//    getStudents();
+//  };
+
+
+//  // Performance report
+//  const average = students.length
+//    ? (
+//        students.reduce((sum, s) => sum + s.marks, 0) /
+//        students.length
+//      ).toFixed(2)
+//    : 0;
+
+
+//  return (
+//    <div>
+//      <h1>Student Performance Dashboard</h1>
+
+
+//      <h3>Total Students: {students.length}</h3>
+//      <h3>Average Marks: {average}</h3>
+
+
+//      <h2>{editId ? "Edit Student" : "Add Student"}</h2>
+
+
+//      <form onSubmit={handleSubmit}>
+//        <input
+//          name="name"
+//          placeholder="Name"
+//          value={form.name}
+//          onChange={handleChange}
+//          required
+//        />
+
+
+//        <input
+//          name="rollNo"
+//          placeholder="Roll Number"
+//          value={form.rollNo}
+//          onChange={handleChange}
+//          required
+//        />
+
+
+//        <input
+//          name="department"
+//          placeholder="Department"
+//          value={form.department}
+//          onChange={handleChange}
+//          required
+//        />
+
+
+//        <input
+//          name="marks"
+//          type="number"
+//          placeholder="Marks"
+//          min="0"
+//          max="100"
+//          value={form.marks}
+//          onChange={handleChange}
+//          required
+//        />
+
+
+//        <button type="submit">
+//          {editId ? "Update" : "Add Student"}
+//        </button>
+//      </form>
+
+
+//      <h2>Student Records</h2>
+
+
+//      <table border="1" cellPadding="8">
+//        <thead>
+//          <tr>
+//            <th>Name</th>
+//            <th>Roll No</th>
+//            <th>Department</th>
+//            <th>Marks</th>
+//            <th>Actions</th>
+//          </tr>
+//        </thead>
+
+
+//        <tbody>
+//          {students.map((s) => (
+//            <tr key={s._id}>
+//              <td>{s.name}</td>
+//              <td>{s.rollNo}</td>
+//              <td>{s.department}</td>
+//              <td>{s.marks}</td>
+//              <td>
+//                <button onClick={() => editStudent(s)}>
+//                  Edit
+//                </button>
+
+
+//                <button onClick={() => deleteStudent(s._id)}>
+//                  Delete
+//                </button>
+//              </td>
+//            </tr>
+//          ))}
+//        </tbody>
+//      </table>
+//    </div>
+//  );
+// }
+
+
+// export default App;
+
+
+
 import { useState, useEffect } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 
+const API = "http://localhost:5002/feedback";
 
-const API = "http://localhost:5000";
+function User() {
+  const [form, setForm] = useState({
+    name: "",
+    service: "",
+    rating: "",
+    comment: ""
+  });
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-function App() {
- const [students, setStudents] = useState([]);
- const [form, setForm] = useState({
-   name: "",
-   rollNo: "",
-   department: "",
-   marks: ""
- });
- const [editId, setEditId] = useState(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    });
 
- // Fetch students
- const getStudents = async () => {
-   const res = await fetch(`${API}/students`);
-   const data = await res.json();
-   setStudents(data);
- };
+    const data = await res.json();
 
+    if (res.ok) {
+      alert("Feedback submitted!");
+      setForm({
+        name: "",
+        service: "",
+        rating: "",
+        comment: ""
+      });
+    } else {
+      alert(data.message);
+    }
+  };
 
- useEffect(() => {
-   getStudents();
- }, []);
+  return (
+    <div>
+      <h2>Submit Feedback</h2>
 
+      <form onSubmit={handleSubmit}>
+        <input
+          name="name"
+          placeholder="Your name"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <br /><br />
 
- // Handle input
- const handleChange = (e) => {
-   setForm({ ...form, [e.target.name]: e.target.value });
- };
+        <input
+          name="service"
+          placeholder="Service name"
+          value={form.service}
+          onChange={handleChange}
+          required
+        />
+        <br /><br />
 
+        <select
+          name="rating"
+          value={form.rating}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select rating</option>
+          <option value="1">1 - Poor</option>
+          <option value="2">2 - Fair</option>
+          <option value="3">3 - Good</option>
+          <option value="4">4 - Very Good</option>
+          <option value="5">5 - Excellent</option>
+        </select>
+        <br /><br />
 
- // Add or update student
- const handleSubmit = async (e) => {
-   e.preventDefault();
+        <textarea
+          name="comment"
+          placeholder="Write your feedback"
+          value={form.comment}
+          onChange={handleChange}
+          required
+        />
+        <br /><br />
 
-
-   await fetch(
-     editId
-       ? `${API}/students/${editId}`
-       : `${API}/students`,
-     {
-       method: editId ? "PUT" : "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-         ...form,
-         marks: Number(form.marks)
-       })
-     }
-   );
-
-
-   setForm({
-     name: "",
-     rollNo: "",
-     department: "",
-     marks: ""
-   });
-   setEditId(null);
-   getStudents();
- };
-
-
- // Edit student
- const editStudent = (s) => {
-   setForm({
-     name: s.name,
-     rollNo: s.rollNo,
-     department: s.department,
-     marks: s.marks
-   });
-   setEditId(s._id);
- };
-
-
- // Delete student
- const deleteStudent = async (id) => {
-   await fetch(`${API}/students/${id}`, {
-     method: "DELETE"
-   });
-   getStudents();
- };
-
-
- // Performance report
- const average = students.length
-   ? (
-       students.reduce((sum, s) => sum + s.marks, 0) /
-       students.length
-     ).toFixed(2)
-   : 0;
-
-
- return (
-   <div>
-     <h1>Student Performance Dashboard</h1>
-
-
-     <h3>Total Students: {students.length}</h3>
-     <h3>Average Marks: {average}</h3>
-
-
-     <h2>{editId ? "Edit Student" : "Add Student"}</h2>
-
-
-     <form onSubmit={handleSubmit}>
-       <input
-         name="name"
-         placeholder="Name"
-         value={form.name}
-         onChange={handleChange}
-         required
-       />
-
-
-       <input
-         name="rollNo"
-         placeholder="Roll Number"
-         value={form.rollNo}
-         onChange={handleChange}
-         required
-       />
-
-
-       <input
-         name="department"
-         placeholder="Department"
-         value={form.department}
-         onChange={handleChange}
-         required
-       />
-
-
-       <input
-         name="marks"
-         type="number"
-         placeholder="Marks"
-         min="0"
-         max="100"
-         value={form.marks}
-         onChange={handleChange}
-         required
-       />
-
-
-       <button type="submit">
-         {editId ? "Update" : "Add Student"}
-       </button>
-     </form>
-
-
-     <h2>Student Records</h2>
-
-
-     <table border="1" cellPadding="8">
-       <thead>
-         <tr>
-           <th>Name</th>
-           <th>Roll No</th>
-           <th>Department</th>
-           <th>Marks</th>
-           <th>Actions</th>
-         </tr>
-       </thead>
-
-
-       <tbody>
-         {students.map((s) => (
-           <tr key={s._id}>
-             <td>{s.name}</td>
-             <td>{s.rollNo}</td>
-             <td>{s.department}</td>
-             <td>{s.marks}</td>
-             <td>
-               <button onClick={() => editStudent(s)}>
-                 Edit
-               </button>
-
-
-               <button onClick={() => deleteStudent(s._id)}>
-                 Delete
-               </button>
-             </td>
-           </tr>
-         ))}
-       </tbody>
-     </table>
-   </div>
- );
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </div>
+  );
 }
 
+function Admin() {
+  const [feedback, setFeedback] = useState([]);
+  const [search, setSearch] = useState("");
 
-export default App;
+  const getFeedback = async () => {
+    const res = await fetch(API);
+    const data = await res.json();
+    setFeedback(data);
+  };
+
+  useEffect(() => {
+    getFeedback();
+  }, []);
+
+  const deleteFeedback = async (id) => {
+    if (!window.confirm("Delete this feedback?")) return;
+
+    await fetch(`${API}/${id}`, {
+      method: "DELETE"
+    });
+
+    getFeedback();
+  };
+
+  const filteredFeedback = feedback.filter((f) =>
+    `${f.name} ${f.service} ${f.comment}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <h2>Admin - Manage Feedback</h2>
+
+      <input
+        placeholder="Search feedback"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <table border="1" cellPadding="8">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Service</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {filteredFeedback.map((f) => (
+            <tr key={f._id}>
+              <td>{f.name}</td>
+              <td>{f.service}</td>
+              <td>{f.rating}/5</td>
+              <td>{f.comment}</td>
+              <td>
+                <button onClick={() => deleteFeedback(f._id)}>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <h1>Feedback Management System</h1>
+
+      <nav>
+        <Link to="/user">User</Link>
+        {" | "}
+        <Link to="/admin">Admin</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/user" element={<User />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/" element={<User />} />
+      </Routes>
+    </div>
+  );
+}
